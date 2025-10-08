@@ -9,7 +9,7 @@ function App() {
         major: "Software Engineering",
         year: 2,
         age: 20,
-        gpa: "idk lol",
+        gpa: 3.75,
         email: "cunnylove67@gmail.com",
         hobbies: [
             "Sleeping",
