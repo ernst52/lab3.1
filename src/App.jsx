@@ -2,21 +2,21 @@ import React from 'react';
 import ProfileCard from './ProfileCard';
 
 function App() {
-    // ข้อมูลโปรไฟล์ตัวอย่าง
+    // Doxxing material
     const sampleProfile = {
-        name: "สมชาย ใจดี",
-        studentId: "66130500001",
-        major: "วิศวกรรมซอฟต์แวร์",
-        year: 3,
-        age: 21,
-        gpa: 3.75,
-        email: "somchai.jaidee@student.university.ac.th",
+        name: "Pran Meedej",
+        studentId: "67543210003-9",
+        major: "Software Engineering",
+        year: 2,
+        age: 20,
+        gpa: "idk lol",
+        email: "cunnylove67@gmail.com",
         hobbies: [
-            "เขียนโค้ด",
-            "เล่นเกม",
-            "ดูหนัง",
-            "ฟังเพลง",
-            "อ่านหนังสือ"
+            "Sleeping",
+            "Napping",
+            "Sitting",
+            "Walking",
+            "Staring at wall"
         ],
         skills: [
             "JavaScript",
@@ -26,7 +26,9 @@ function App() {
             "Git",
             "Node.js"
         ],
-        // TODO: นักศึกษาจะเพิ่ม fields เพิ่มเติมใน Challenge
+        socialLinks: [
+        { platform: "GitHub", url: "https://github.com/ernst52" },
+    ]
     };
 
     return (
@@ -44,7 +46,7 @@ function App() {
                     🎓 Personal Profile Card
                 </h1>
                 <p style={{ color: '#666', fontSize: '16px' }}>
-                    Lab 3.1 - ทำความรู้จักกับ React.js และ JSX
+                    Lab 3.1 - Raping React.js & JSX
                 </p>
             </div>
             
