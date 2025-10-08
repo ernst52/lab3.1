@@ -3,6 +3,10 @@ import './ProfileCard.css';
 
 function ProfileCard({ profile = {} }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [viewCount, setViewCount] = useState(0);
+  const [favoriteHobbies, setFavoriteHobbies] = useState([]);
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [contactInfo, setContactInfo] = useState({ name: '', message: '' });
 
   // Avatar initials
   const getInitials = (name = '') =>
@@ -12,37 +16,56 @@ function ProfileCard({ profile = {} }) {
       .join('')
       .toUpperCase();
 
-  // Contact button
-  const handleContactClick = () => {
-    alert(`Hello! Contact ${profile.name ?? 'N/A'} at ${profile.email ?? 'N/A'}`);
-  };
-
-  // Skill click
-  const handleSkillClick = (skill) => {
-    alert(`${profile.name ?? 'N/A'} is skilled in ${skill}!`);
-  };
-
   // Toggle dark/light theme
-  const toggleTheme = () => {
-    setIsDarkMode(prev => !prev);
+  const toggleTheme = () => setIsDarkMode(prev => !prev);
+
+  // Card click increments view count
+  const handleCardClick = () => setViewCount(prev => prev + 1);
+
+  // Toggle favorite hobbies
+  const toggleFavoriteHobby = (hobby) => {
+    setFavoriteHobbies(prev =>
+      prev.includes(hobby)
+        ? prev.filter(h => h !== hobby)
+        : [...prev, hobby]
+    );
   };
 
-  // Conditional class for dark mode
+  // Show contact form instead of alert
+  const handleContactClick = () => setShowContactForm(true);
+
+  // Submit contact form
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    alert(`Message sent!\nName: ${contactInfo.name}\nMessage: ${contactInfo.message}`);
+    setShowContactForm(false);
+    setContactInfo({ name: '', message: '' });
+  };
+
   const cardClassName = `profile-card ${isDarkMode ? 'dark' : ''}`;
 
   return (
-    <div className={cardClassName}>
+    <div className={cardClassName} onClick={handleCardClick}>
+      {/* Theme toggle */}
+      <button className="theme-toggle" onClick={(e) => { e.stopPropagation(); toggleTheme(); }}>
+        {isDarkMode ? '🌞 Light Mode' : '🌙 Dark Mode'}
+      </button>
+
+      {/* View counter */}
+      <div className="view-counter">👁️ Views: {viewCount}</div>
+
       {/* Header */}
       <div className="profile-header">
-        <button className="theme-toggle" onClick={toggleTheme}>
-          {isDarkMode ? '🌞 Light Mode' : '🌙 Dark Mode'}
-        </button>
-        <div className="profile-avatar">{getInitials(profile.name)}</div>
+        <div className="profile-avatar">
+            {profile.avatarUrl
+                ? <img src={profile.avatarUrl} alt={profile.name} />
+                : getInitials(profile.name)}
+        </div>
         <h1 className="profile-name">{profile.name ?? 'Unknown'}</h1>
         <div className="student-id">{profile.studentId ?? 'N/A'}</div>
       </div>
 
-      {/* Basic Info */}
+      {/* Info */}
       <div className="profile-info">
         <div className="info-item">
           <div className="info-label">Major</div>
@@ -59,7 +82,7 @@ function ProfileCard({ profile = {} }) {
         <div className="info-item">
           <div className="info-label">GPA</div>
           <div className="info-value">
-            {typeof profile.gpa === 'number' ? profile.gpa.toFixed(2) : "N/A"}
+            {typeof profile.gpa === 'number' ? profile.gpa.toFixed(2) : 'N/A'}
             {typeof profile.gpa === 'number' && profile.gpa >= 3.5 && ' 🌟'}
           </div>
         </div>
@@ -69,23 +92,25 @@ function ProfileCard({ profile = {} }) {
       <div className="profile-section">
         <h3>🏆 Achievements</h3>
         <div className="achievements">
-          {profile.gpa >= 3.5 && (
-            <span className="achievement-badge">🌟 Honors</span>
-          )}
-          {(profile.skills?.length ?? 0) >= 5 && (
-            <span className="achievement-badge">💪 Multi-skilled</span>
-          )}
-
+          {profile.gpa >= 3.5 && <span className="achievement-badge">🌟 Honors</span>}
+          {(profile.skills?.length ?? 0) >= 5 && <span className="achievement-badge">💪 Multi-skilled</span>}
         </div>
       </div>
 
-      {/* Hobbies */}
+      {/* Hobbies with favorite toggle */}
       <div className="profile-section">
         <h3>🎯 Hobbies</h3>
         <ul className="hobbies-list">
-          {(profile.hobbies ?? []).map((hobby, index) => (
-            <li key={index} className="hobby-item">
-              {hobby}
+          {(profile.hobbies ?? []).map((hobby, i) => (
+            <li
+              key={i}
+              className={`hobby-item ${favoriteHobbies.includes(hobby) ? 'favorite' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleFavoriteHobby(hobby);
+              }}
+            >
+              {hobby} {favoriteHobbies.includes(hobby) && '💖'}
             </li>
           ))}
         </ul>
@@ -95,11 +120,11 @@ function ProfileCard({ profile = {} }) {
       <div className="profile-section">
         <h3>💻 Skills</h3>
         <div className="skills">
-          {(profile.skills ?? []).map((skill, index) => (
+          {(profile.skills ?? []).map((skill, i) => (
             <div
-              key={index}
+              key={i}
               className="skill-tag"
-              onClick={() => handleSkillClick(skill)}
+              onClick={(e) => { e.stopPropagation(); alert(`${profile.name ?? 'N/A'} is skilled in ${skill}`); }}
             >
               {skill}
             </div>
@@ -112,9 +137,9 @@ function ProfileCard({ profile = {} }) {
         <div className="profile-section">
           <h3>🌐 Social Media</h3>
           <div className="social-links">
-            {profile.socialLinks.map((link, index) => (
+            {profile.socialLinks.map((link, i) => (
               <a
-                key={index}
+                key={i}
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -127,10 +152,34 @@ function ProfileCard({ profile = {} }) {
         </div>
       )}
 
-      {/* Contact Button */}
-      <button className="contact-button" onClick={handleContactClick}>
-        Contact {profile.name ?? 'N/A'}
-      </button>
+      {/* Contact */}
+      {!showContactForm && (
+        <button className="contact-button" onClick={(e) => { e.stopPropagation(); handleContactClick(); }}>
+          Contact {profile.name ?? 'N/A'}
+        </button>
+      )}
+
+      {/* Contact Form */}
+      {showContactForm && (
+        <div className="contact-form" onClick={(e) => e.stopPropagation()}>
+          <form onSubmit={handleFormSubmit}>
+            <input
+              type="text"
+              placeholder="Your Name"
+              value={contactInfo.name}
+              onChange={(e) => setContactInfo({ ...contactInfo, name: e.target.value })}
+              required
+            />
+            <textarea
+              placeholder="Your Message"
+              value={contactInfo.message}
+              onChange={(e) => setContactInfo({ ...contactInfo, message: e.target.value })}
+              required
+            />
+            <button type="submit">Send</button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

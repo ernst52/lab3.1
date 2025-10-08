@@ -1,5 +1,6 @@
 import React from 'react';
 import ProfileCard from './ProfileCard';
+import avatarImg from './assets/avatar.jpg';
 
 function App() {
     // Doxxing material
@@ -28,7 +29,8 @@ function App() {
         ],
         socialLinks: [
         { platform: "GitHub", url: "https://github.com/ernst52" },
-    ]
+        ],
+        avatarUrl: avatarImg
     };
 
     return (
